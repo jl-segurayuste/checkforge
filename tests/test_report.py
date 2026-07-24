@@ -1,7 +1,7 @@
 import json
 
-from repo_health.plugin import CheckResult, Finding
-from repo_health.report import Report
+from auditkit.plugin import CheckResult, Finding
+from auditkit.report import Report
 
 
 def _report() -> Report:

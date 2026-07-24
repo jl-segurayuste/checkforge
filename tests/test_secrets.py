@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from repo_health.checks.secrets import SecretsCheck
+from auditkit.checks.secrets import SecretsCheck
 from tests.conftest import commit_all
 
 

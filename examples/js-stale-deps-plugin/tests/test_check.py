@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from repo_health_js_example.check import JsStaleDepsCheck
+from auditkit_js_example.check import JsStaleDepsCheck
 from tests.conftest import commit_all
 
 

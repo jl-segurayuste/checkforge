@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from repo_health.checks.git_hotspots import GitHotspotsCheck
+from auditkit.checks.git_hotspots import GitHotspotsCheck
 from tests.conftest import commit_all
 
 

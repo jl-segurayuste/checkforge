@@ -1,4 +1,4 @@
-# repo-health
+# auditkit
 
 Un único comando que agrega varias auditorías de un repositorio —
 dependencias, secretos, código muerto, historial de git — en un solo
@@ -6,9 +6,9 @@ informe, en vez de tener que ejecutar y leer media docena de herramientas
 sueltas por separado.
 
 ```
-$ repo-health analyze .
+$ auditkit analyze .
 
-repo-health — /ruta/al/repo
+auditkit — /ruta/al/repo
 
 ── secrets ──────────────────────────────
   53 fichero(s) analizados, 2 hallazgo(s).
@@ -28,25 +28,25 @@ Total: 3 hallazgo(s) — 1 high, 2 low
 Hoy existen muchas herramientas excelentes que resuelven un problema cada
 una — un detector de secretos, un linter de dependencias, un analizador de
 churn de git — pero ninguna las normaliza en un único informe accionable.
-`repo-health` no compite con ellas: es un agregador. El núcleo no sabe
+`auditkit` no compite con ellas: es un agregador. El núcleo no sabe
 nada de ningún lenguaje ni de ningún tipo de análisis concreto; cada check
 es un plugin independiente.
 
 ## Instalación
 
 ```bash
-pip install repo-health
+pip install auditkit
 ```
 
 ## Uso
 
 ```bash
-repo-health analyze .                    # informe en consola
-repo-health analyze . --json             # informe en JSON
-repo-health analyze . --only secrets     # solo un check
-repo-health analyze . --skip git_hotspots
-repo-health analyze . --fail-on high     # código de salida 1 si hay algo "high" (para CI)
-repo-health list-checks                  # que checks estan instalados
+auditkit analyze .                    # informe en consola
+auditkit analyze . --json             # informe en JSON
+auditkit analyze . --only secrets     # solo un check
+auditkit analyze . --skip git_hotspots
+auditkit analyze . --fail-on high     # código de salida 1 si hay algo "high" (para CI)
+auditkit list-checks                  # que checks estan instalados
 ```
 
 ## Checks incluidos (v0.1)
@@ -66,9 +66,9 @@ positivo silencioso es peor que no tener el check.
 
 ## Arquitectura: cada check es un plugin
 
-El núcleo (`repo_health.runner`) descubre los checks instalados vía
+El núcleo (`auditkit.runner`) descubre los checks instalados vía
 [entry points](https://packaging.python.org/en/latest/specifications/entry-points/)
-del grupo `repo_health.checks` — exactamente igual para los cuatro checks
+del grupo `auditkit.checks` — exactamente igual para los cuatro checks
 que trae este paquete que para uno que instale un tercero. No hace falta
 tocar este repositorio para añadir un check nuevo.
 
@@ -76,7 +76,7 @@ Un check es cualquier clase con este contrato:
 
 ```python
 from pathlib import Path
-from repo_health.plugin import CheckResult, Finding
+from auditkit.plugin import CheckResult, Finding
 
 class MiCheck:
     name = "mi_check"
@@ -92,11 +92,11 @@ class MiCheck:
 Y en el `pyproject.toml` de tu propio paquete:
 
 ```toml
-[project.entry-points."repo_health.checks"]
+[project.entry-points."auditkit.checks"]
 mi_check = "mi_paquete.checks:MiCheck"
 ```
 
-Con tu paquete instalado, `repo-health list-checks` ya lo verá. Ejemplo
+Con tu paquete instalado, `auditkit list-checks` ya lo verá. Ejemplo
 real y funcional, no solo el fragmento de arriba:
 [`examples/js-stale-deps-plugin`](examples/js-stale-deps-plugin) — puerto
 a JavaScript/TypeScript del check `stale_deps`, con sus propios tests.

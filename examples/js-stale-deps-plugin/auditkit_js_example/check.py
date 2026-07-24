@@ -1,11 +1,11 @@
-"""Ejemplo de plugin de terceros para repo-health: puerto a JavaScript del
+"""Ejemplo de plugin de terceros para auditkit: puerto a JavaScript del
 check `stale_deps` incorporado (dependencias de `package.json` declaradas
 sin usar, o usadas sin declarar).
 
 Pensado como plantilla para escribir un plugin real: la única diferencia
 con un check incorporado es que este vive en su propio paquete instalable
-(`repo-health-js-example`) con su propia entrada de entry point -- ver
-`pyproject.toml` en la raíz de este directorio. `repo-health` nunca
+(`auditkit-js-example`) con su propia entrada de entry point -- ver
+`pyproject.toml` en la raíz de este directorio. `auditkit` nunca
 importa este módulo directamente; lo descubre en tiempo de ejecución.
 """
 from __future__ import annotations
@@ -15,7 +15,7 @@ import re
 import subprocess
 from pathlib import Path
 
-from repo_health.plugin import CheckResult, Finding
+from auditkit.plugin import CheckResult, Finding
 
 _JS_EXTENSIONS = {".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx"}
 

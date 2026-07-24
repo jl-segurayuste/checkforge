@@ -1,6 +1,6 @@
-# repo-health-js-example
+# auditkit-js-example
 
-Plugin de ejemplo para [repo-health](../../README.md): puerto a
+Plugin de ejemplo para [auditkit](../../README.md): puerto a
 JavaScript/TypeScript del check `stale_deps` incorporado. Sirve como
 plantilla real y funcional para escribir un plugin propio — no como
 código decorativo.
@@ -15,21 +15,21 @@ Detecta:
 ## Instalación
 
 ```bash
-pip install repo-health repo-health-js-example
-repo-health list-checks   # ya sale "js_stale_deps"
-repo-health analyze . --only js_stale_deps
+pip install auditkit auditkit-js-example
+auditkit list-checks   # ya sale "js_stale_deps"
+auditkit analyze . --only js_stale_deps
 ```
 
-## Lo único que hace falta para que `repo-health` lo descubra
+## Lo único que hace falta para que `auditkit` lo descubra
 
 Una entrada de entry point en el `pyproject.toml` de este paquete:
 
 ```toml
-[project.entry-points."repo_health.checks"]
-js_stale_deps = "repo_health_js_example.check:JsStaleDepsCheck"
+[project.entry-points."auditkit.checks"]
+js_stale_deps = "auditkit_js_example.check:JsStaleDepsCheck"
 ```
 
-Nada más. `repo-health` nunca importa este paquete directamente — lo
+Nada más. `auditkit` nunca importa este paquete directamente — lo
 encuentra en tiempo de ejecución vía
 [entry points](https://packaging.python.org/en/latest/specifications/entry-points/)
 igual que a cualquiera de sus checks incorporados.
@@ -38,7 +38,7 @@ igual que a cualquiera de sus checks incorporados.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"   # instala tambien repo-health desde PyPI
+pip install -e ".[dev]"   # instala tambien auditkit desde PyPI
 pytest
 ruff check .
 ```

@@ -5,7 +5,7 @@ Gracias por el interés. Dos formas de contribuir, según el tamaño del cambio:
 ## Un check nuevo (lo más habitual)
 
 Un check nuevo **no necesita tocar este repositorio**. Publica tu propio
-paquete con una entrada en el grupo de entry points `repo_health.checks`
+paquete con una entrada en el grupo de entry points `auditkit.checks`
 — ver [`examples/js-stale-deps-plugin`](examples/js-stale-deps-plugin)
 como plantilla completa y funcional, y la sección "Arquitectura" del
 [README](README.md#arquitectura-cada-check-es-un-plugin).
@@ -14,7 +14,7 @@ Si aun así crees que un check merece vivir en este repo (por ejemplo,
 soporte a un lenguaje muy usado que hoy falta en `dead_files`/
 `stale_deps`), abre primero un issue para hablarlo antes del PR.
 
-## Un cambio al núcleo (`repo_health/plugin.py`, `runner.py`, `report.py`, `cli.py`)
+## Un cambio al núcleo (`auditkit/plugin.py`, `runner.py`, `report.py`, `cli.py`)
 
 Estas piezas son el contrato que usa cualquier plugin — un cambio aquí
 puede romper checks de terceros que no vemos. Abre un issue explicando el

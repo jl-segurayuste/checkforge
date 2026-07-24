@@ -3,7 +3,7 @@
 El núcleo no distingue entre los checks incorporados y los de un plugin
 externo: ambos se descubren y ejecutan exactamente igual (ver `runner.py`).
 Un check de terceros solo necesita publicar su propio paquete instalable
-con una entrada en el grupo de entry points `repo_health.checks` — no hace
+con una entrada en el grupo de entry points `auditkit.checks` — no hace
 falta tocar este repositorio para añadir uno nuevo.
 """
 from __future__ import annotations

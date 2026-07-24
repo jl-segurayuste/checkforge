@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from repo_health.checks.readme_drift import ReadmeDriftCheck
+from auditkit.checks.readme_drift import ReadmeDriftCheck
 from tests.conftest import commit_all
 
 

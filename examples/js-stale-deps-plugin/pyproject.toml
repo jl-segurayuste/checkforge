@@ -1,12 +1,12 @@
 [project]
-name = "repo-health-js-example"
+name = "auditkit-js-example"
 version = "0.1.0"
-description = "Plugin de ejemplo para repo-health: dependencias JS declaradas sin usar / usadas sin declarar."
+description = "Plugin de ejemplo para auditkit: dependencias JS declaradas sin usar / usadas sin declarar."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
 dependencies = [
-    "repo-health>=0.1.0",
+    "auditkit>=0.1.0",
 ]
 
 [project.optional-dependencies]
@@ -16,13 +16,13 @@ dev = [
 ]
 
 # Esta es la unica parte que un plugin de terceros necesita para que
-# `repo-health list-checks`/`analyze` lo descubra -- nada mas que instalar
-# este paquete en el mismo entorno que repo-health.
-[project.entry-points."repo_health.checks"]
-js_stale_deps = "repo_health_js_example.check:JsStaleDepsCheck"
+# `auditkit list-checks`/`analyze` lo descubra -- nada mas que instalar
+# este paquete en el mismo entorno que auditkit.
+[project.entry-points."auditkit.checks"]
+js_stale_deps = "auditkit_js_example.check:JsStaleDepsCheck"
 
 [tool.setuptools.packages.find]
-include = ["repo_health_js_example*"]
+include = ["auditkit_js_example*"]
 
 [tool.ruff]
 line-length = 100

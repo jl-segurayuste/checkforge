@@ -1,6 +1,6 @@
 import pytest
 
-from repo_health.plugin import CheckResult, Finding
+from auditkit.plugin import CheckResult, Finding
 
 
 def test_finding_acepta_severidad_valida():

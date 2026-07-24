@@ -1,5 +1,5 @@
 [project]
-name = "repo-health"
+name = "auditkit"
 version = "0.1.0"
 description = "Agregador de auditorías de repositorios: dependencias, secretos, código muerto, hotspots de git — un informe, arquitectura de plugins."
 readme = "README.md"
@@ -16,21 +16,21 @@ dev = [
 ]
 
 [project.scripts]
-repo-health = "repo_health.cli:main"
+auditkit = "auditkit.cli:main"
 
 # Los checks incorporados se registran igual que lo haria un plugin de
 # terceros -- el nucleo no les da ningun trato especial. Cualquiera puede
 # anadir un check nuevo publicando un paquete propio con una entrada en
 # este mismo grupo, sin tocar este repo.
-[project.entry-points."repo_health.checks"]
-secrets = "repo_health.checks.secrets:SecretsCheck"
-dead_files = "repo_health.checks.dead_files:DeadFilesCheck"
-git_hotspots = "repo_health.checks.git_hotspots:GitHotspotsCheck"
-stale_deps = "repo_health.checks.stale_deps:StaleDepsCheck"
-readme_drift = "repo_health.checks.readme_drift:ReadmeDriftCheck"
+[project.entry-points."auditkit.checks"]
+secrets = "auditkit.checks.secrets:SecretsCheck"
+dead_files = "auditkit.checks.dead_files:DeadFilesCheck"
+git_hotspots = "auditkit.checks.git_hotspots:GitHotspotsCheck"
+stale_deps = "auditkit.checks.stale_deps:StaleDepsCheck"
+readme_drift = "auditkit.checks.readme_drift:ReadmeDriftCheck"
 
 [tool.setuptools.packages.find]
-include = ["repo_health*"]
+include = ["auditkit*"]
 
 [tool.ruff]
 line-length = 100

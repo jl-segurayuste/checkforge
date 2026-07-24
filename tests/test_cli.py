@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from repo_health.cli import main
+from auditkit.cli import main
 from tests.conftest import commit_all
 
 
@@ -24,7 +24,7 @@ def test_analyze_consola(git_repo: Path, capsys):
     rc = main(["analyze", str(git_repo)])
     out = capsys.readouterr().out
     assert rc == 0
-    assert "repo-health" in out
+    assert "auditkit" in out
     assert "Total:" in out
 
 

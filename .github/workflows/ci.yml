@@ -37,11 +37,11 @@ jobs:
           cache: pip
       - name: Instalar
         run: pip install -e .
-      - name: repo-health se analiza a sí mismo
+      - name: auditkit se analiza a sí mismo
         # Solo el paquete real, no tests/: los tests de "secrets" contienen a
         # proposito cadenas con forma de secreto (para probar que se detectan),
         # asi que analizar tests/ aqui siempre "encontraria" sus propios fixtures.
-        run: repo-health analyze repo_health --fail-on high
+        run: auditkit analyze auditkit --fail-on high
 
   example-plugin:
     runs-on: ubuntu-latest
@@ -51,12 +51,12 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      - name: Instalar repo-health (local) + el plugin de ejemplo
+      - name: Instalar auditkit (local) + el plugin de ejemplo
         run: |
           pip install -e .
           pip install -e "./examples/js-stale-deps-plugin[dev]"
       - name: El plugin se descubre de verdad
-        run: repo-health list-checks | grep -q js_stale_deps
+        run: auditkit list-checks | grep -q js_stale_deps
       - name: Lint (ruff) del plugin
         run: ruff check examples/js-stale-deps-plugin
       - name: Tests del plugin

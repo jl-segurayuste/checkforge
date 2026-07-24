@@ -1,6 +1,6 @@
 """Descubre los checks instalados (propios y de terceros) y los ejecuta.
 
-Descubrimiento vía entry points (`repo_health.checks`) -- funciona igual
+Descubrimiento vía entry points (`auditkit.checks`) -- funciona igual
 para un check incorporado en este paquete que para uno instalado desde un
 paquete de terceros. Un check que falle con una excepción no tira abajo la
 ejecución entera: se recoge como `CheckResult(error=...)` y se sigue con
@@ -15,7 +15,7 @@ from pathlib import Path
 
 from .plugin import Check, CheckResult
 
-ENTRY_POINT_GROUP = "repo_health.checks"
+ENTRY_POINT_GROUP = "auditkit.checks"
 
 
 def discover_checks() -> dict[str, type[Check]]:
