@@ -34,8 +34,10 @@ es un plugin independiente.
 
 ## Instalación
 
+Todavía no está publicado en PyPI, así que se instala directamente desde GitHub:
+
 ```bash
-pip install checkforge
+pip install git+https://github.com/jl-segurayuste/checkforge.git
 ```
 
 ## Uso

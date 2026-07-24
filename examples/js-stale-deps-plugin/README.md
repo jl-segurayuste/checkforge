@@ -14,8 +14,11 @@ Detecta:
 
 ## Instalación
 
+Ninguno de los dos está en PyPI todavía, así que se instalan desde GitHub:
+
 ```bash
-pip install checkforge checkforge-js-example
+pip install git+https://github.com/jl-segurayuste/checkforge.git
+pip install "git+https://github.com/jl-segurayuste/checkforge.git#subdirectory=examples/js-stale-deps-plugin"
 checkforge list-checks   # ya sale "js_stale_deps"
 checkforge analyze . --only js_stale_deps
 ```
