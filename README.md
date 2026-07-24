@@ -114,6 +114,9 @@ pytest
 ruff check .
 ```
 
+Ver [CONTRIBUTING.md](CONTRIBUTING.md) antes de mandar un check nuevo o
+un cambio al núcleo.
+
 ## Licencia
 
 MIT.
