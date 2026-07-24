@@ -27,6 +27,7 @@ secrets = "repo_health.checks.secrets:SecretsCheck"
 dead_files = "repo_health.checks.dead_files:DeadFilesCheck"
 git_hotspots = "repo_health.checks.git_hotspots:GitHotspotsCheck"
 stale_deps = "repo_health.checks.stale_deps:StaleDepsCheck"
+readme_drift = "repo_health.checks.readme_drift:ReadmeDriftCheck"
 
 [tool.setuptools.packages.find]
 include = ["repo_health*"]

@@ -57,6 +57,7 @@ repo-health list-checks                  # que checks estan instalados
 | `dead_files` | Ficheros Python que ningún otro fichero del repo importa |
 | `git_hotspots` | Ficheros que cambian con mucha frecuencia, ramas obsoletas, ficheros enormes |
 | `stale_deps` | Dependencias Python declaradas sin usar, o usadas sin declarar |
+| `readme_drift` | Versión de Python y comandos de CLI del README frente a `pyproject.toml` |
 
 Todo es análisis estático: nada de esto ejecuta el código del repo que se
 analiza. `dead_files` y `stale_deps` son heurísticas y hoy solo entienden
