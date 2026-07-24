@@ -1,6 +1,6 @@
 import pytest
 
-from auditkit.plugin import CheckResult, Finding
+from checkforge.plugin import CheckResult, Finding
 
 
 def test_finding_acepta_severidad_valida():

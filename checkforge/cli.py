@@ -1,4 +1,4 @@
-"""CLI: `auditkit analyze <ruta>`."""
+"""CLI: `checkforge analyze <ruta>`."""
 from __future__ import annotations
 
 import argparse
@@ -14,7 +14,7 @@ _SEVERITY_RANK = {sev: i for i, sev in enumerate(SEVERITIES)}
 
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="auditkit",
+        prog="checkforge",
         description="Agregador de auditorías de repositorios (dependencias, secretos, "
         "código muerto, hotspots de git...) en un único informe.",
     )

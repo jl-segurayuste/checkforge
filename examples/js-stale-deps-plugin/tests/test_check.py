@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from auditkit_js_example.check import JsStaleDepsCheck
+from checkforge_js_example.check import JsStaleDepsCheck
 from tests.conftest import commit_all
 
 

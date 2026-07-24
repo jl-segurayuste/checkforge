@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from auditkit.plugin import CheckResult
-from auditkit.runner import discover_checks, run_checks
+from checkforge.plugin import CheckResult
+from checkforge.runner import discover_checks, run_checks
 
 
 def test_discover_checks_encuentra_los_incorporados():
@@ -33,7 +33,7 @@ class _BoomCheck:
 
 
 def test_run_checks_aisla_un_check_que_falla(tmp_path: Path, monkeypatch):
-    import auditkit.runner as runner_mod
+    import checkforge.runner as runner_mod
 
     monkeypatch.setattr(runner_mod, "discover_checks", lambda: {"boom": _BoomCheck})
     results = run_checks(tmp_path)

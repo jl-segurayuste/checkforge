@@ -40,7 +40,7 @@ class Report:
         return json.dumps(payload, indent=2, ensure_ascii=False)
 
     def to_console(self) -> str:
-        lines: list[str] = [f"auditkit — {self.repo_path}", ""]
+        lines: list[str] = [f"checkforge — {self.repo_path}", ""]
 
         for result in self.results:
             lines.append(f"── {result.check_name} " + "─" * max(0, 40 - len(result.check_name)))

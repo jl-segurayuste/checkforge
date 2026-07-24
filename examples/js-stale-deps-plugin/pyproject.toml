@@ -1,12 +1,12 @@
 [project]
-name = "auditkit-js-example"
+name = "checkforge-js-example"
 version = "0.1.0"
-description = "Plugin de ejemplo para auditkit: dependencias JS declaradas sin usar / usadas sin declarar."
+description = "Plugin de ejemplo para checkforge: dependencias JS declaradas sin usar / usadas sin declarar."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
 dependencies = [
-    "auditkit>=0.1.0",
+    "checkforge>=0.1.0",
 ]
 
 [project.optional-dependencies]
@@ -16,13 +16,13 @@ dev = [
 ]
 
 # Esta es la unica parte que un plugin de terceros necesita para que
-# `auditkit list-checks`/`analyze` lo descubra -- nada mas que instalar
-# este paquete en el mismo entorno que auditkit.
-[project.entry-points."auditkit.checks"]
-js_stale_deps = "auditkit_js_example.check:JsStaleDepsCheck"
+# `checkforge list-checks`/`analyze` lo descubra -- nada mas que instalar
+# este paquete en el mismo entorno que checkforge.
+[project.entry-points."checkforge.checks"]
+js_stale_deps = "checkforge_js_example.check:JsStaleDepsCheck"
 
 [tool.setuptools.packages.find]
-include = ["auditkit_js_example*"]
+include = ["checkforge_js_example*"]
 
 [tool.ruff]
 line-length = 100

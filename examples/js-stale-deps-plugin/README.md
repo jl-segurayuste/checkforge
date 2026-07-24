@@ -1,6 +1,6 @@
-# auditkit-js-example
+# checkforge-js-example
 
-Plugin de ejemplo para [auditkit](../../README.md): puerto a
+Plugin de ejemplo para [checkforge](../../README.md): puerto a
 JavaScript/TypeScript del check `stale_deps` incorporado. Sirve como
 plantilla real y funcional para escribir un plugin propio — no como
 código decorativo.
@@ -15,21 +15,21 @@ Detecta:
 ## Instalación
 
 ```bash
-pip install auditkit auditkit-js-example
-auditkit list-checks   # ya sale "js_stale_deps"
-auditkit analyze . --only js_stale_deps
+pip install checkforge checkforge-js-example
+checkforge list-checks   # ya sale "js_stale_deps"
+checkforge analyze . --only js_stale_deps
 ```
 
-## Lo único que hace falta para que `auditkit` lo descubra
+## Lo único que hace falta para que `checkforge` lo descubra
 
 Una entrada de entry point en el `pyproject.toml` de este paquete:
 
 ```toml
-[project.entry-points."auditkit.checks"]
-js_stale_deps = "auditkit_js_example.check:JsStaleDepsCheck"
+[project.entry-points."checkforge.checks"]
+js_stale_deps = "checkforge_js_example.check:JsStaleDepsCheck"
 ```
 
-Nada más. `auditkit` nunca importa este paquete directamente — lo
+Nada más. `checkforge` nunca importa este paquete directamente — lo
 encuentra en tiempo de ejecución vía
 [entry points](https://packaging.python.org/en/latest/specifications/entry-points/)
 igual que a cualquiera de sus checks incorporados.
@@ -38,7 +38,7 @@ igual que a cualquiera de sus checks incorporados.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"   # instala tambien auditkit desde PyPI
+pip install -e ".[dev]"   # instala tambien checkforge desde PyPI
 pytest
 ruff check .
 ```

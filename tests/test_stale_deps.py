@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from auditkit.checks.stale_deps import StaleDepsCheck
+from checkforge.checks.stale_deps import StaleDepsCheck
 from tests.conftest import commit_all
 
 

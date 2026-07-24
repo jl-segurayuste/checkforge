@@ -1,11 +1,11 @@
-"""Ejemplo de plugin de terceros para auditkit: puerto a JavaScript del
+"""Ejemplo de plugin de terceros para checkforge: puerto a JavaScript del
 check `stale_deps` incorporado (dependencias de `package.json` declaradas
 sin usar, o usadas sin declarar).
 
 Pensado como plantilla para escribir un plugin real: la única diferencia
 con un check incorporado es que este vive en su propio paquete instalable
-(`auditkit-js-example`) con su propia entrada de entry point -- ver
-`pyproject.toml` en la raíz de este directorio. `auditkit` nunca
+(`checkforge-js-example`) con su propia entrada de entry point -- ver
+`pyproject.toml` en la raíz de este directorio. `checkforge` nunca
 importa este módulo directamente; lo descubre en tiempo de ejecución.
 """
 from __future__ import annotations
@@ -15,7 +15,7 @@ import re
 import subprocess
 from pathlib import Path
 
-from auditkit.plugin import CheckResult, Finding
+from checkforge.plugin import CheckResult, Finding
 
 _JS_EXTENSIONS = {".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx"}
 

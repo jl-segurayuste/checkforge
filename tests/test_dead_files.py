@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from auditkit.checks.dead_files import DeadFilesCheck
+from checkforge.checks.dead_files import DeadFilesCheck
 from tests.conftest import commit_all
 
 

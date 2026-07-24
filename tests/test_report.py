@@ -1,7 +1,7 @@
 import json
 
-from auditkit.plugin import CheckResult, Finding
-from auditkit.report import Report
+from checkforge.plugin import CheckResult, Finding
+from checkforge.report import Report
 
 
 def _report() -> Report:

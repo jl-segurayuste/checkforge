@@ -37,11 +37,11 @@ jobs:
           cache: pip
       - name: Instalar
         run: pip install -e .
-      - name: auditkit se analiza a sí mismo
+      - name: checkforge se analiza a sí mismo
         # Solo el paquete real, no tests/: los tests de "secrets" contienen a
         # proposito cadenas con forma de secreto (para probar que se detectan),
         # asi que analizar tests/ aqui siempre "encontraria" sus propios fixtures.
-        run: auditkit analyze auditkit --fail-on high
+        run: checkforge analyze checkforge --fail-on high
 
   example-plugin:
     runs-on: ubuntu-latest
@@ -51,12 +51,12 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      - name: Instalar auditkit (local) + el plugin de ejemplo
+      - name: Instalar checkforge (local) + el plugin de ejemplo
         run: |
           pip install -e .
           pip install -e "./examples/js-stale-deps-plugin[dev]"
       - name: El plugin se descubre de verdad
-        run: auditkit list-checks | grep -q js_stale_deps
+        run: checkforge list-checks | grep -q js_stale_deps
       - name: Lint (ruff) del plugin
         run: ruff check examples/js-stale-deps-plugin
       - name: Tests del plugin
