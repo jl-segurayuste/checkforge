@@ -16,8 +16,12 @@ def test_run_checks_only_filtra(tmp_path: Path):
 
 
 def test_run_checks_skip_excluye(tmp_path: Path):
-    results = run_checks(tmp_path, skip={"secrets", "dead_files", "git_hotspots", "stale_deps"})
-    assert results == []
+    # No asume que estos son los UNICOS checks instalados en el entorno --
+    # otro plugin (p. ej. el ejemplo de JS) puede estar instalado a la vez
+    # sin que este test deba saberlo. Solo comprueba que lo excluido no sale.
+    skipped = {"secrets", "dead_files", "git_hotspots", "stale_deps"}
+    results = run_checks(tmp_path, skip=skipped)
+    assert not (skipped & {r.check_name for r in results})
 
 
 class _BoomCheck:

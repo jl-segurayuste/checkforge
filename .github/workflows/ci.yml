@@ -42,3 +42,22 @@ jobs:
         # proposito cadenas con forma de secreto (para probar que se detectan),
         # asi que analizar tests/ aqui siempre "encontraria" sus propios fixtures.
         run: repo-health analyze repo_health --fail-on high
+
+  example-plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Instalar repo-health (local) + el plugin de ejemplo
+        run: |
+          pip install -e .
+          pip install -e "./examples/js-stale-deps-plugin[dev]"
+      - name: El plugin se descubre de verdad
+        run: repo-health list-checks | grep -q js_stale_deps
+      - name: Lint (ruff) del plugin
+        run: ruff check examples/js-stale-deps-plugin
+      - name: Tests del plugin
+        run: pytest -q examples/js-stale-deps-plugin

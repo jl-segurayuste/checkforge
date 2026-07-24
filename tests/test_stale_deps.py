@@ -13,6 +13,18 @@ def test_sin_requirements_ni_pyproject_no_aplica(git_repo: Path):
     assert "No aplica" in result.summary
 
 
+def test_requirements_txt_vacio_sigue_detectando_imports_sin_declarar(git_repo: Path):
+    # requirements.txt EXISTE pero no declara nada -- no es lo mismo que
+    # "no existe": debe seguir comprobando imports de terceros sin declarar.
+    (git_repo / "requirements.txt").write_text("")
+    (git_repo / "main.py").write_text("import requests\n")
+    commit_all(git_repo)
+    result = StaleDepsCheck().run(git_repo)
+    assert result.error is None
+    info_titles = [f.title for f in result.findings if f.severity == "info"]
+    assert any("requests" in t for t in info_titles)
+
+
 def test_dependencia_declarada_no_usada_se_marca(git_repo: Path):
     (git_repo / "requirements.txt").write_text("requests==2.31.0\nclick>=8\n")
     (git_repo / "main.py").write_text("import click\nclick.echo('hola')\n")

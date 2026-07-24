@@ -70,12 +70,18 @@ def _parse_pyproject_toml(path: Path) -> set[str]:
     return names
 
 
-def _declared_dependencies(repo_path: Path) -> set[str]:
-    names: set[str] = set()
+def _declared_dependencies(repo_path: Path) -> set[str] | None:
+    """None si no existe ni requirements.txt ni pyproject.toml (no aplica);
+    set() si existen pero no declaran ninguna dependencia -- son casos
+    distintos, el segundo sigue debiendo comprobar imports sin declarar.
+    """
     req = repo_path / "requirements.txt"
+    pyproject = repo_path / "pyproject.toml"
+    if not req.is_file() and not pyproject.is_file():
+        return None
+    names: set[str] = set()
     if req.is_file():
         names |= _parse_requirements_txt(req)
-    pyproject = repo_path / "pyproject.toml"
     if pyproject.is_file():
         names |= _parse_pyproject_toml(pyproject)
     return names
@@ -134,10 +140,10 @@ class StaleDepsCheck:
 
     def run(self, repo_path: Path) -> CheckResult:
         declared = _declared_dependencies(repo_path)
-        if not declared:
+        if declared is None:
             return CheckResult(
                 check_name=self.name,
-                summary="No aplica: no se encontró requirements.txt ni [project.dependencies] en pyproject.toml.",
+                summary="No aplica: no se encontró requirements.txt ni pyproject.toml.",
             )
 
         used = _used_imports(repo_path)

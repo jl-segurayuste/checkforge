@@ -95,9 +95,13 @@ Y en el `pyproject.toml` de tu propio paquete:
 mi_check = "mi_paquete.checks:MiCheck"
 ```
 
-Con tu paquete instalado, `repo-health list-checks` ya lo verá. Ideas
-obvias para un plugin de terceros: soporte a otros lenguajes en
-`dead_files`/`stale_deps` (JS/Go/Rust/Java), comprobación de versiones
+Con tu paquete instalado, `repo-health list-checks` ya lo verá. Ejemplo
+real y funcional, no solo el fragmento de arriba:
+[`examples/js-stale-deps-plugin`](examples/js-stale-deps-plugin) — puerto
+a JavaScript/TypeScript del check `stale_deps`, con sus propios tests.
+
+Otras ideas obvias para un plugin de terceros: soporte a más lenguajes en
+`dead_files`/`stale_deps` (Go/Rust/Java), comprobación de versiones
 desactualizadas contra el índice real de paquetes (`stale_deps` de este
 repo es deliberadamente offline), un check de cobertura de tests.
 
