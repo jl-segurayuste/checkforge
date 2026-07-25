@@ -44,7 +44,7 @@ def test_asignacion_generica_placeholder_no_se_marca(git_repo: Path):
 
 
 def test_ip_privada_se_marca_como_info(git_repo: Path):
-    (git_repo / "notes.md").write_text("El servidor está en 192.168.1.100\n")
+    (git_repo / "notes.md").write_text("El servidor está en 192.168.1.10\n")
     commit_all(git_repo)
     result = SecretsCheck().run(git_repo)
     hits = _findings_by_title_prefix(result, "IP privada")
