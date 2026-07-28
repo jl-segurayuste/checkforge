@@ -1,0 +1,5 @@
+# Fixtures de test que a propósito contienen valores con pinta de secreto
+# real (claves PEM, IPs) para poder probar el check "secrets" de checkforge
+# -- no son fugas reales.
+tests/test_secrets.py
+tests/test_cli.py
