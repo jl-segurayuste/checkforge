@@ -51,7 +51,13 @@ _HIGH_CONFIDENCE_PATTERNS: list[_Pattern] = [
 # (placeholders, ejemplos de documentación), severidad media.
 _GENERIC_ASSIGNMENT = re.compile(
     r"""(?ix)
-    \b(password|passwd|secret|api[_-]?key|access[_-]?token|private[_-]?key)\b
+    [\w-]*(password|passwd|secret|api[_-]?key|access[_-]?token|private[_-]?key)
+    ["']?\]?                            # cierre de subíndice si la clave iba entre
+                                         # comillas+corchetes: dict["password"] = ...
+    (?:\s*:\s*[A-Za-z_][\w\[\], .]*)?    # anotación de tipo de Python opcional:
+                                         # "nombre: Tipo = valor" -- sin esto, el
+                                         # separador esperado tras la palabra clave
+                                         # sería "Tipo", nunca "=".
     \s*[:=]\s*
     ['"]([^'"\s]{8,})['"]
     """

@@ -57,3 +57,51 @@ def test_ficheros_no_trackeados_por_git_se_ignoran(git_repo: Path):
     # No se hace commit_all -- el fichero queda sin trackear.
     result = SecretsCheck().run(git_repo)
     assert result.findings == []
+
+
+def test_asignacion_con_prefijo_snake_case_se_marca(git_repo: Path):
+    # Bug real encontrado 2026-08-09: `\bpassword\b` nunca coincidía si "password"
+    # iba precedido de "_" -- "_" es un carácter de palabra para `\b`, así que
+    # "smtp_password"/"DATABASE_PASSWORD" (el patrón de nombrado más común en
+    # Python) eran completamente invisibles para este check.
+    (git_repo / "settings.py").write_text('smtp_password = "correcthorsebatterystaple"\n')
+    commit_all(git_repo)
+    result = SecretsCheck().run(git_repo)
+    hits = _findings_by_title_prefix(result, "Asignación con aspecto de secreto")
+    assert len(hits) == 1
+
+
+def test_asignacion_con_anotacion_de_tipo_se_marca(git_repo: Path):
+    # Bug real encontrado 2026-08-09: "nombre: Tipo = valor" (anotación de tipo de
+    # Python) no coincidía porque el separador esperado justo tras la palabra
+    # clave era "=", no "str".
+    (git_repo / "settings.py").write_text('smtp_password: str = "correcthorsebatterystaple"\n')
+    commit_all(git_repo)
+    result = SecretsCheck().run(git_repo)
+    hits = _findings_by_title_prefix(result, "Asignación con aspecto de secreto")
+    assert len(hits) == 1
+
+
+def test_asignacion_por_subindice_se_marca(git_repo: Path):
+    # Bug real encontrado 2026-08-09: os.environ["ACCESS_TOKEN"] = "..." no
+    # coincidía porque la clave va entre corchetes y comillas.
+    (git_repo / "settings.py").write_text(
+        'os.environ["ACCESS_TOKEN"] = "correcthorsebatterystaple"\n'
+    )
+    commit_all(git_repo)
+    result = SecretsCheck().run(git_repo)
+    hits = _findings_by_title_prefix(result, "Asignación con aspecto de secreto")
+    assert len(hits) == 1
+
+
+def test_palabra_clave_como_prefijo_de_otra_palabra_no_se_marca(git_repo: Path):
+    # "secretary"/"token_endpoint" contienen la palabra clave pero no son
+    # credenciales -- no deben dispararse por la generosidad del prefijo.
+    (git_repo / "settings.py").write_text(
+        'secretary_name = "Jane Doe as employee here"\n'
+        'token_endpoint = "https://auth.example.com/oauth/token/endpoint"\n'
+    )
+    commit_all(git_repo)
+    result = SecretsCheck().run(git_repo)
+    hits = _findings_by_title_prefix(result, "Asignación con aspecto de secreto")
+    assert hits == []
