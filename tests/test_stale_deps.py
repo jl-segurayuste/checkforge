@@ -83,3 +83,16 @@ def test_modulos_de_stdlib_no_se_marcan_como_sin_declarar(git_repo: Path):
     result = StaleDepsCheck().run(git_repo)
     info_titles = [f.title for f in result.findings if f.severity == "info"]
     assert not any("json" in t or "os" in t for t in info_titles)
+
+
+def test_herramientas_y_dependencias_implicitas_no_se_marcan(git_repo):
+    """Falsos positivos reales: ruff/pytest en el extra dev, y python-multipart/itsdangerous/httpx con FastAPI."""
+    from checkforge.checks.stale_deps import StaleDepsCheck
+    from tests.conftest import commit_all
+    (git_repo / "pyproject.toml").write_text(
+        '[project]\nname = "x"\ndependencies = ["fastapi", "python-multipart", "itsdangerous", "requests"]\n'
+        '[project.optional-dependencies]\ndev = ["ruff", "pytest", "pytest-playwright", "httpx"]\n')
+    (git_repo / "app.py").write_text("from fastapi import FastAPI\n")
+    commit_all(git_repo)
+    titles = [f.title for f in StaleDepsCheck().run(git_repo).findings]
+    assert titles == ["Dependencia declarada pero no importada en ningún fichero: requests"]

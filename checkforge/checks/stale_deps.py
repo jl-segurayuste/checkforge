@@ -38,6 +38,30 @@ _PACKAGE_TO_IMPORT = {
 
 _STDLIB = set(getattr(sys, "stdlib_module_names", ()))
 
+# Se usan como programa o plugin, no con import: declararlas (normalmente en un extra "dev") es lo correcto
+_TOOLS = {
+    "ruff", "black", "isort", "flake8", "pylint", "mypy", "pyright", "bandit", "pytest", "coverage",
+    "tox", "nox", "pre-commit", "build", "twine", "pip-tools", "sphinx", "mkdocs", "uv", "hatch",
+}
+_TOOL_PREFIXES = ("pytest-", "flake8-", "types-", "mkdocs-", "sphinx-")
+# Las carga otra dependencia por su cuenta: si se usa esa, no son "declaradas sin usar"
+_IMPLIED_BY = {
+    "python-multipart": {"fastapi", "starlette"},      # formularios
+    "itsdangerous": {"fastapi", "starlette", "flask"},  # SessionMiddleware / sesiones firmadas
+    "httpx": {"fastapi", "starlette"},                  # TestClient
+    "uvicorn": {"fastapi", "starlette"},
+    "gunicorn": {"flask", "django", "fastapi"},
+    "psycopg2-binary": {"sqlalchemy", "django"},
+    "asyncpg": {"sqlalchemy"},
+}
+
+
+def _used_another_way(package: str, used: set[str]) -> bool:
+    name = package.lower()
+    if name in _TOOLS or name.startswith(_TOOL_PREFIXES):
+        return True
+    return bool(_IMPLIED_BY.get(name, set()) & used)
+
 
 def _parse_requirements_txt(path: Path) -> set[str]:
     names: set[str] = set()
@@ -157,7 +181,7 @@ class StaleDepsCheck:
         findings: list[Finding] = []
         for package in sorted(declared):
             import_name = _to_import_name(package)
-            if import_name not in used:
+            if import_name not in used and not _used_another_way(package, used):
                 findings.append(Finding(
                     severity="low",
                     title=f"Dependencia declarada pero no importada en ningún fichero: {package}",

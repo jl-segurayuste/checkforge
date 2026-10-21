@@ -23,7 +23,13 @@ from pathlib import Path
 from ..plugin import CheckResult, Finding
 
 _README_NAMES = ("README.md", "README.rst", "README.txt", "README")
-_PY_VERSION_IN_README = re.compile(r"\bpython\s*(?:>=|==|~=)?\s*(\d+)\.(\d+)\b", re.IGNORECASE)
+_PY_VERSION_IN_README = re.compile(r"\bpython\s*(>=|==|~=)?\s*(\d+)\.(\d+)(\+)?", re.IGNORECASE)
+# Solo cuenta una versión que el README da como requisito: con operador o "+", o en una línea que habla
+# de requisitos. "workaround para python 3.7" en un ejemplo de salida no dice qué versión hace falta.
+_REQUIREMENT_WORDS = re.compile(
+    r"requi|necesit|need|support|soport|compatib|m[ií]nim|minimum|instal|superior|posterior|or (later|newer)|"
+    r"at least|al menos", re.IGNORECASE)
+_FENCE = re.compile(r"^(```|~~~).*?^\1", re.MULTILINE | re.DOTALL)
 _MIN_VERSION_SPEC = re.compile(r">=\s*(\d+)\.(\d+)")
 
 
@@ -73,9 +79,13 @@ class ReadmeDriftCheck:
 
         requires_python = project.get("requires-python", "")
         min_version = _min_python_version(requires_python)
+        prose = _FENCE.sub("", readme_text)        # los bloques de código son ejemplos, no requisitos
         if min_version is not None:
-            for match in _PY_VERSION_IN_README.finditer(readme_text):
-                mentioned = (int(match.group(1)), int(match.group(2)))
+            for match in _PY_VERSION_IN_README.finditer(prose):
+                line = prose[prose.rfind("\n", 0, match.start()) + 1:prose.find("\n", match.end())]
+                if not (match.group(1) or match.group(4) or _REQUIREMENT_WORDS.search(line)):
+                    continue
+                mentioned = (int(match.group(2)), int(match.group(3)))
                 if mentioned[0] == 3 and mentioned < min_version:
                     findings.append(Finding(
                         severity="medium",
