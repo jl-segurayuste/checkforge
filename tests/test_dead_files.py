@@ -113,3 +113,16 @@ def test_scripts_y_tests_fuera_de_tests_no_se_marcan(git_repo: Path):
     commit_all(git_repo)
     paths = [f.path for f in DeadFilesCheck().run(git_repo).findings]
     assert paths == ["tools/modulo.py"]
+
+
+def test_estructura_src_no_da_huerfanos(git_repo):
+    (git_repo / "src" / "pkg").mkdir(parents=True)
+    (git_repo / "src" / "pkg" / "__init__.py").write_text("")
+    (git_repo / "src" / "pkg" / "mod.py").write_text("def f(): pass\n")
+    (git_repo / "src" / "pkg" / "util.py").write_text("x = 1\n")
+    (git_repo / "src" / "pkg" / "cli.py").write_text("from pkg.mod import f\nimport pkg.util\n")
+    (git_repo / "pyproject.toml").write_text('[project]\nname = "pkg"\n[project.scripts]\npkg = "pkg.cli:main"\n')
+    commit_all(git_repo)
+    from checkforge.checks.dead_files import DeadFilesCheck
+
+    assert DeadFilesCheck().run(git_repo).findings == []

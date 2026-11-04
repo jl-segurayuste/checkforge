@@ -58,9 +58,10 @@ def _module_candidates(repo_path: Path, file_path: Path) -> set[str]:
         parts[-1] = parts[-1].removesuffix(".py")
     if not parts:
         return set()
-    dotted = ".".join(parts)
-    candidates = {dotted, parts[-1]}
-    return candidates
+    # Todos los sufijos: con la estructura src/ (o un directorio que se mete en sys.path) el módulo
+    # src/pkg/mod.py se importa como «pkg.mod»; antes solo contaban «src.pkg.mod» y «mod», y
+    # todo el paquete salía como huérfano.
+    return {".".join(parts[i:]) for i in range(len(parts))}
 
 
 def _is_script(file_path: Path) -> bool:

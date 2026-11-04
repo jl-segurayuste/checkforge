@@ -63,6 +63,12 @@ def main(argv: list[str] | None = None) -> int:
 
     only = set(args.only) if args.only else None
     skip = set(args.skip) if args.skip else None
+    # Un nombre mal escrito en --only no ejecutaba nada y salía 0: verde falso en CI con --fail-on.
+    unknown = ((only or set()) | (skip or set())) - set(discover_checks())
+    if unknown:
+        print(f"error: check(s) desconocido(s): {', '.join(sorted(unknown))} "
+              "(ver `checkforge list-checks`)", file=sys.stderr)
+        return 2
     results = run_checks(repo_path, only=only, skip=skip)
     report = Report(repo_path=str(repo_path), results=results)
 

@@ -61,3 +61,10 @@ def test_fail_on_devuelve_0_si_no_hay_hallazgos_al_nivel(git_repo: Path, capsys)
     rc = main(["analyze", str(git_repo), "--only", "secrets", "--fail-on", "high"])
     capsys.readouterr()
     assert rc == 0
+
+
+def test_check_desconocido_sale_2(tmp_path, capsys):
+    from checkforge.cli import main
+
+    assert main(["analyze", str(tmp_path), "--only", "no_existe"]) == 2
+    assert "no_existe" in capsys.readouterr().err
