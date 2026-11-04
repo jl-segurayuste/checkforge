@@ -1,6 +1,6 @@
 [project]
 name = "checkforge"
-version = "0.1.4"
+version = "0.1.5"
 description = "Agregador de auditorías de repositorios: dependencias, secretos, código muerto, hotspots de git — un informe, arquitectura de plugins."
 readme = "README.md"
 license = { text = "MIT" }

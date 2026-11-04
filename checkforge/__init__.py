@@ -1,3 +1,3 @@
 """checkforge — agregador de auditorías de repositorios, arquitectura de plugins."""
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"

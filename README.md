@@ -48,6 +48,7 @@ checkforge analyze . --json             # informe en JSON
 checkforge analyze . --only secrets     # solo un check
 checkforge analyze . --skip git_hotspots
 checkforge analyze . --fail-on high     # código de salida 1 si hay algo "high" (para CI)
+                                        # código 2 si algún check no se pudo ejecutar (análisis incompleto)
 checkforge list-checks                  # que checks estan instalados
 ```
 

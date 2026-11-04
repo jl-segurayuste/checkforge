@@ -68,3 +68,20 @@ def test_check_desconocido_sale_2(tmp_path, capsys):
 
     assert main(["analyze", str(tmp_path), "--only", "no_existe"]) == 2
     assert "no_existe" in capsys.readouterr().err
+
+
+def test_check_que_revienta_sale_2(tmp_path, monkeypatch, capsys):
+    from checkforge import cli
+    from checkforge.plugin import CheckResult
+
+    monkeypatch.setattr(cli, "run_checks", lambda *a, **k: [
+        CheckResult(check_name="roto", summary="El check falló", error="Traceback..."),
+    ])
+    assert cli.main(["analyze", str(tmp_path)]) == 2
+    assert "roto" in capsys.readouterr().err
+
+
+def test_carpeta_sin_git_no_es_fallo(tmp_path):
+    from checkforge.cli import main
+
+    assert main(["analyze", str(tmp_path), "--only", "dead_files"]) == 0

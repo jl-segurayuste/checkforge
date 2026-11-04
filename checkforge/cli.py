@@ -77,6 +77,14 @@ def main(argv: list[str] | None = None) -> int:
     else:
         print(report.to_console())
 
+    # Un check que revienta deja el análisis incompleto: antes solo se avisaba y salía 0 (o 1 según
+    # --fail-on), y en un CI pasaba por verde sin haber mirado lo que ese check mira.
+    # «not_a_git_repo» no es un fallo: es «no aplica» (carpeta sin git).
+    failed = [r.check_name for r in results if r.error and r.error != "not_a_git_repo"]
+    if failed:
+        print(f"error: no se pudieron ejecutar: {', '.join(failed)} (análisis incompleto)", file=sys.stderr)
+        return 2
+
     if args.fail_on is not None:
         threshold = _SEVERITY_RANK[args.fail_on]
         for result in results:
