@@ -23,6 +23,12 @@ checkforge — /ruta/al/repo
 Total: 3 hallazgo(s) — 1 high, 2 low
 ```
 
+## Así se ve
+
+![Salida de checkforge sobre un proyecto de ejemplo](docs/img/demo.svg)
+
+<sub>Ejecución real sobre un proyecto Python de ejemplo con un secreto, un fichero huérfano y el README desfasado (todos los datos son ficticios).</sub>
+
 ## Por qué existe
 
 Hoy existen muchas herramientas excelentes que resuelven un problema cada

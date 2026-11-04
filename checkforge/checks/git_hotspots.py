@@ -61,23 +61,24 @@ def _churn_hotspots(repo_path: Path) -> list[Finding]:
 
 def _stale_branches(repo_path: Path) -> list[Finding]:
     out = _git(
-        repo_path, "for-each-ref", "--format=%(refname:short)|%(committerdate:unix)",
+        repo_path, "for-each-ref", "--format=%(refname)|%(committerdate:unix)|%(symref)",
         "refs/heads", "refs/remotes",
     )
     if not out:
         return []
+    # La rama actual y la rama por defecto del remoto (destino de origin/HEAD) no son «candidatas
+    # a borrar» aunque lleven tiempo sin commits: en un proyecto estable main salía como obsoleta.
+    current = (_git(repo_path, "symbolic-ref", "-q", "HEAD") or "").strip()
+    rows = [line.split("|") for line in out.splitlines() if line.count("|") == 2]
+    protected = {current} | {symref for _, _, symref in rows if symref}
     now = time.time()
     findings: list[Finding] = []
-    for line in out.splitlines():
-        if "|" not in line:
-            continue
-        name, _, ts = line.partition("|")
-        if not ts.strip().isdigit():
+    for ref, ts, symref in rows:
+        if symref or ref in protected or not ts.strip().isdigit():
             continue
         age_days = (now - int(ts)) / 86400
-        if name.endswith("/HEAD"):
-            continue
         if age_days > _STALE_BRANCH_DAYS:
+            name = ref.removeprefix("refs/heads/").removeprefix("refs/remotes/")
             findings.append(Finding(
                 severity="info",
                 title=f"Rama sin commits desde hace {int(age_days)} días: {name}",

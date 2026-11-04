@@ -48,3 +48,22 @@ def test_fichero_grande_con_nombre_no_ascii(git_repo):
     (git_repo / "vídeo-señal.bin").write_bytes(b"\0" * (2 * 1024 * 1024))
     commit_all(git_repo)
     assert [f.path for f in _large_tracked_files(git_repo)] == ["vídeo-señal.bin"]
+
+
+def test_rama_actual_antigua_no_es_candidata_a_borrar(git_repo: Path):
+    import os
+    import subprocess
+
+    vieja = {**os.environ, "GIT_AUTHOR_DATE": "2020-01-01T00:00:00", "GIT_COMMITTER_DATE": "2020-01-01T00:00:00"}
+    (git_repo / "a.txt").write_text("a\n")
+    subprocess.run(["git", "add", "-A"], cwd=git_repo, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "viejo"], cwd=git_repo, check=True, env=vieja)
+    subprocess.run(["git", "branch", "experimento"], cwd=git_repo, check=True)
+    # Simula un clon: origin/HEAD apunta a la rama por defecto del remoto.
+    for ref in ("refs/remotes/origin/main", "refs/remotes/origin/viejo-pr"):
+        subprocess.run(["git", "update-ref", ref, "HEAD"], cwd=git_repo, check=True)
+    subprocess.run(["git", "symbolic-ref", "refs/remotes/origin/HEAD", "refs/remotes/origin/main"],
+                   cwd=git_repo, check=True)
+
+    titles = [f.title for f in GitHotspotsCheck().run(git_repo).findings if "Rama" in f.title]
+    assert [t.split(": ")[1] for t in titles] == ["experimento", "origin/viejo-pr"]
