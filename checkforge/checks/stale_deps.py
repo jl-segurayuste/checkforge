@@ -138,7 +138,7 @@ def _local_package_names(repo_path: Path) -> set[str]:
     # Solo ficheros versionados: un entorno virtual sin punto (env/) colaría sus paquetes.
     try:
         out = subprocess.run(
-            ["git", "ls-files", "*.py"], cwd=repo_path, capture_output=True,
+            ["git", "-c", "core.quotePath=false", "ls-files", "*.py"], cwd=repo_path, capture_output=True,
             text=True, check=True, timeout=30,
         )
     except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
@@ -155,7 +155,7 @@ def _local_package_names(repo_path: Path) -> set[str]:
 def _used_imports(repo_path: Path) -> set[str] | None:
     try:
         out = subprocess.run(
-            ["git", "ls-files", "*.py"], cwd=repo_path, capture_output=True,
+            ["git", "-c", "core.quotePath=false", "ls-files", "*.py"], cwd=repo_path, capture_output=True,
             text=True, check=True, timeout=30,
         )
     except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):

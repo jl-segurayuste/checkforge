@@ -22,7 +22,9 @@ _LARGE_FILE_BYTES = 1 * 1024 * 1024
 def _git(repo_path: Path, *args: str) -> str | None:
     try:
         out = subprocess.run(
-            ["git", *args], cwd=repo_path, capture_output=True, text=True,
+            # quotePath=false: sin esto git escapa las rutas no ASCII ("v\303\255deo.bin") y no se
+            # podían abrir: un fichero grande con tildes en el nombre se saltaba en silencio
+            ["git", "-c", "core.quotePath=false", *args], cwd=repo_path, capture_output=True, text=True,
             check=True, timeout=60,
         )
         return out.stdout
@@ -43,6 +45,8 @@ def _churn_hotspots(repo_path: Path) -> list[Finding]:
         if line and line != "__COMMIT__":
             counts[line] += 1
     findings: list[Finding] = []
+    current = set((_git(repo_path, "ls-files") or "").splitlines())
+    counts = Counter({p: c for p, c in counts.items() if p in current})   # sin ficheros ya borrados
     for path, count in counts.most_common(_TOP_HOTSPOTS):
         if count < 5:  # no merece la pena senalar ficheros con pocos cambios
             continue

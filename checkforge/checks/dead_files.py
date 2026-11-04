@@ -40,7 +40,7 @@ _TEXT_SUFFIXES = {".md", ".rst", ".txt", ".py", ".sh", ".toml", ".yml", ".yaml",
 def _tracked_py_files(repo_path: Path) -> list[Path] | None:
     try:
         out = subprocess.run(
-            ["git", "ls-files", "*.py"], cwd=repo_path, capture_output=True,
+            ["git", "-c", "core.quotePath=false", "ls-files", "*.py"], cwd=repo_path, capture_output=True,
             text=True, check=True, timeout=30,
         )
     except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
@@ -158,7 +158,7 @@ def _python_m_modules(repo_path: Path, tracked: list[str]) -> set[str]:
 
 def _tracked_files(repo_path: Path) -> list[str]:
     try:
-        out = subprocess.run(["git", "ls-files"], cwd=repo_path, capture_output=True, text=True,
+        out = subprocess.run(["git", "-c", "core.quotePath=false", "ls-files"], cwd=repo_path, capture_output=True, text=True,
                              check=True, timeout=30)
     except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
         return []

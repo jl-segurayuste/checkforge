@@ -30,7 +30,7 @@ _REQUIREMENT_WORDS = re.compile(
     r"requi|necesit|need|support|soport|compatib|m[ií]nim|minimum|instal|superior|posterior|or (later|newer)|"
     r"at least|al menos", re.IGNORECASE)
 _FENCE = re.compile(r"^(```|~~~).*?^\1", re.MULTILINE | re.DOTALL)
-_MIN_VERSION_SPEC = re.compile(r">=\s*(\d+)\.(\d+)")
+_MIN_VERSION_SPEC = re.compile(r"(?:>=|~=|==)\s*(\d+)\.(\d+)")   # >=3.11, ~=3.11 y ==3.11.* fijan el mínimo
 
 
 def _find_readme(repo_path: Path) -> Path | None:

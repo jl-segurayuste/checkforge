@@ -121,3 +121,11 @@ def test_formatos_de_clave_actuales(git_repo: Path, linea: str):
     commit_all(git_repo)
     hits = _findings_by_title_prefix(SecretsCheck().run(git_repo), "Posible secreto")
     assert hits and hits[0].severity == "high"
+
+
+def test_sin_git_dentro_de_una_carpeta_venv_se_analiza(tmp_path: Path):
+    proj = tmp_path / "venv" / "proyecto"
+    proj.mkdir(parents=True)
+    (proj / "config.py").write_text('TOKEN = "ghp_' + "a" * 36 + '"\n')
+    hits = _findings_by_title_prefix(SecretsCheck().run(proj), "Posible secreto")
+    assert hits

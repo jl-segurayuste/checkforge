@@ -81,7 +81,7 @@ _PRIVATE_IP = re.compile(
 def _tracked_files(repo_path: Path) -> list[Path]:
     try:
         out = subprocess.run(
-            ["git", "ls-files"], cwd=repo_path, capture_output=True, text=True,
+            ["git", "-c", "core.quotePath=false", "ls-files"], cwd=repo_path, capture_output=True, text=True,
             check=True, timeout=30,
         )
         return [repo_path / line for line in out.stdout.splitlines() if line]
@@ -90,7 +90,8 @@ def _tracked_files(repo_path: Path) -> list[Path]:
         skip_dirs = {".git", "node_modules", ".venv", "venv", "__pycache__", ".mypy_cache", ".ruff_cache"}
         return [
             p for p in repo_path.rglob("*")
-            if p.is_file() and not any(part in skip_dirs for part in p.parts)
+            # partes relativas a la raíz: con las absolutas, un repo dentro de «venv/…» no se analizaba
+            if p.is_file() and not any(part in skip_dirs for part in p.relative_to(repo_path).parts)
         ]
 
 

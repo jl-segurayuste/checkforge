@@ -40,3 +40,11 @@ def test_fichero_grande_se_marca(git_repo: Path):
 def test_repo_vacio_no_falla(git_repo: Path):
     result = GitHotspotsCheck().run(git_repo)
     assert result.error is None
+
+
+def test_fichero_grande_con_nombre_no_ascii(git_repo):
+    from checkforge.checks.git_hotspots import _large_tracked_files
+
+    (git_repo / "vídeo-señal.bin").write_bytes(b"\0" * (2 * 1024 * 1024))
+    commit_all(git_repo)
+    assert [f.path for f in _large_tracked_files(git_repo)] == ["vídeo-señal.bin"]

@@ -54,7 +54,7 @@ def _package_name(specifier: str) -> str | None:
 def _tracked_js_files(repo_path: Path) -> list[Path] | None:
     try:
         out = subprocess.run(
-            ["git", "ls-files"], cwd=repo_path, capture_output=True, text=True,
+            ["git", "-c", "core.quotePath=false", "ls-files"], cwd=repo_path, capture_output=True, text=True,
             check=True, timeout=30,
         )
     except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
