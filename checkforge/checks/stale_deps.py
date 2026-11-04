@@ -132,6 +132,23 @@ def _local_package_names(repo_path: Path) -> set[str]:
             names.add(entry.name)
         elif entry.is_file() and entry.suffix == ".py":
             names.add(entry.stem)
+    # Módulos sueltos de subdirectorios que se importan por su nombre (pytest mete tests/ en el
+    # path: `from conftest import ...`; un script importa al de al lado) y paquetes bajo src/.
+    # Antes `conftest` salía como dependencia sin declarar.
+    # Solo ficheros versionados: un entorno virtual sin punto (env/) colaría sus paquetes.
+    try:
+        out = subprocess.run(
+            ["git", "ls-files", "*.py"], cwd=repo_path, capture_output=True,
+            text=True, check=True, timeout=30,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+        return names
+    for line in out.stdout.splitlines():
+        rel = Path(line)
+        if rel.name != "__init__.py":
+            names.add(rel.stem)
+        elif len(rel.parts) == 3 and rel.parts[0] == "src":
+            names.add(rel.parts[1])
     return names
 
 

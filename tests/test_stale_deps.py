@@ -96,3 +96,29 @@ def test_herramientas_y_dependencias_implicitas_no_se_marcan(git_repo):
     commit_all(git_repo)
     titles = [f.title for f in StaleDepsCheck().run(git_repo).findings]
     assert titles == ["Dependencia declarada pero no importada en ningún fichero: requests"]
+
+
+def test_modulos_locales_de_subdirectorios_no_se_marcan(git_repo: Path):
+    """pytest mete tests/ en el path: `from conftest import x` no es una dependencia."""
+    (git_repo / "requirements.txt").write_text("click>=8\n")
+    (git_repo / "tests").mkdir()
+    (git_repo / "tests" / "conftest.py").write_text("x = 1\n")
+    (git_repo / "tests" / "test_a.py").write_text("import click\nfrom conftest import x\n")
+    (git_repo / "src" / "mipkg").mkdir(parents=True)
+    (git_repo / "src" / "mipkg" / "__init__.py").write_text("")
+    (git_repo / "app.py").write_text("import mipkg\n")
+    commit_all(git_repo)
+    info_titles = [f.title for f in StaleDepsCheck().run(git_repo).findings if f.severity == "info"]
+    assert not any("conftest" in t or "mipkg" in t for t in info_titles)
+
+
+def test_entorno_virtual_sin_versionar_no_oculta_dependencias(git_repo: Path):
+    (git_repo / "requirements.txt").write_text("click>=8\n")
+    (git_repo / "env" / "lib" / "requests").mkdir(parents=True)
+    (git_repo / "env" / "lib" / "requests" / "__init__.py").write_text("")
+    (git_repo / "env" / "lib" / "requests.py").write_text("")
+    (git_repo / ".gitignore").write_text("env/\n")
+    (git_repo / "main.py").write_text("import click\nimport requests\n")
+    commit_all(git_repo)
+    info_titles = [f.title for f in StaleDepsCheck().run(git_repo).findings if f.severity == "info"]
+    assert any("requests" in t for t in info_titles)

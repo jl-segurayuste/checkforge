@@ -38,11 +38,15 @@ class _Pattern:
 
 # Formatos de token de proveedores reales -- alta confianza, alta severidad.
 _HIGH_CONFIDENCE_PATTERNS: list[_Pattern] = [
-    _Pattern("Clave privada (PEM)", re.compile(r"-----BEGIN (RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----"), "high"),
+    _Pattern("Clave privada (PEM)", re.compile(
+        r"-----BEGIN (?:(?:RSA|EC|OPENSSH|DSA|ENCRYPTED|PGP) )?PRIVATE KEY(?: BLOCK)?-----"), "high"),
     _Pattern("AWS Access Key ID", re.compile(r"\b(AKIA|ASIA)[0-9A-Z]{16}\b"), "high"),
-    _Pattern("GitHub token", re.compile(r"\bgh[pousr]_[A-Za-z0-9]{36,}\b"), "high"),
-    _Pattern("Slack token", re.compile(r"\bxox[baprs]-[A-Za-z0-9-]{10,}\b"), "high"),
-    _Pattern("Clave de API estilo OpenAI/Stripe", re.compile(r"\b(sk|pk)_(live|test)_[A-Za-z0-9]{16,}\b"), "high"),
+    _Pattern("GitHub token", re.compile(r"\b(?:gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{60,})\b"), "high"),
+    _Pattern("Slack token", re.compile(r"\bxox[baprse]-[A-Za-z0-9-]{10,}\b"), "high"),
+    _Pattern("Clave de API de Stripe", re.compile(r"\b(sk|pk|rk)_(live|test)_[A-Za-z0-9]{16,}\b"), "high"),
+    # Antes el patrón decía «OpenAI/Stripe» pero solo veía las de Stripe.
+    _Pattern("Clave de API de OpenAI/Anthropic", re.compile(
+        r"\bsk-(?:(?:proj|svcacct|admin|ant-api\d+|ant-admin\d+)-)?[A-Za-z0-9_-]{20,}"), "high"),
     _Pattern("Token de Slack webhook", re.compile(r"https://hooks\.slack\.com/services/[A-Za-z0-9/]{20,}"), "high"),
     _Pattern("JWT (aspecto de)", re.compile(r"\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b"), "medium"),
 ]

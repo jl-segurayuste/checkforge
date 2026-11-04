@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from checkforge.checks.secrets import SecretsCheck
 from tests.conftest import commit_all
 
@@ -105,3 +107,17 @@ def test_palabra_clave_como_prefijo_de_otra_palabra_no_se_marca(git_repo: Path):
     result = SecretsCheck().run(git_repo)
     hits = _findings_by_title_prefix(result, "Asignación con aspecto de secreto")
     assert hits == []
+
+
+@pytest.mark.parametrize("linea", [
+    'k = "sk-proj-AbCdEfGhIjKlMnOpQrStUvWxYz0123456789"\n',
+    'k = "sk-ant-api03-AbCdEfGhIjKlMnOpQrStUvWxYz0123456789"\n',
+    "-----BEGIN ENCRYPTED PRIVATE KEY-----\n",
+    "-----BEGIN PGP PRIVATE KEY BLOCK-----\n",
+    "t = github_pat_" + "A1b2C3d4E5" * 7 + "\n",
+])
+def test_formatos_de_clave_actuales(git_repo: Path, linea: str):
+    (git_repo / "x.txt").write_text(linea)
+    commit_all(git_repo)
+    hits = _findings_by_title_prefix(SecretsCheck().run(git_repo), "Posible secreto")
+    assert hits and hits[0].severity == "high"
